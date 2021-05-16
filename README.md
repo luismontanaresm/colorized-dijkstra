@@ -36,7 +36,8 @@ A->B->C->G->I->F
 
 
 ### Usage interface
-````from graph_tools import (
+````
+from graph_tools import (
     Color,
     ColoredNode,
     ColoredGraph
@@ -89,13 +90,27 @@ except Exception as e:
     print('Handled exception: "'+str(e)+'"')
     # --> Err: node with label "Ñuble" has not been inserted
 
-# Then you are able to add edges
 metro_santiago.add_node(nuble)
 metro_santiago.add_edge(irarrazabal, nuble)
 
-# finally, loading the graph as a json file will clean all previous 
+# And then you are able to use the get_shortest_paths method
+best_paths_with_red_route = metro_santiago.get_shortest_paths(baquedano, route_color=RED)
+print('Best paths with RED route from "' + baquedano.label + '"')
+for station, best_path in best_paths_with_red_route.items():
+    print(station, end=': ')
+    print(best_path)
+
+# --> Best paths with RED route from "Baquedano"
+# --> ColoredNode(label="Baquedano" color="None)": [ColoredNode(label="Baquedano" color="None)"]
+# --> ColoredNode(label="Parque Bustamante" color="RED)": [ColoredNode(label="Baquedano" color="None)", ColoredNode(label="Parque Bustamante" color="RED)"]
+# --> ColoredNode(label="Santa Isabel" color="GREEN)": [ColoredNode(label="Baquedano" color="None)", ColoredNode(label="Parque Bustamante" color="RED)", ColoredNode(label="Santa Isabel" color="GREEN)"]
+# --> ColoredNode(label="Irarrazabal" color="None)": [ColoredNode(label="Baquedano" color="None)", ColoredNode(label="Parque Bustamante" color="RED)", ColoredNode(label="Irarrazabal" color="None)"]
+# --> ColoredNode(label="Ñuble" color="None)": [ColoredNode(label="Baquedano" color="None)", ColoredNode(label="Parque Bustamante" color="RED)", ColoredNode(label="Irarrazabal" color="None)", ColoredNode(label="Ñuble" color="None)"]
+
+# Finally, loading the graph as a json file will clean all previous 
 # nodes and edges
 metro_santiago.load_from_json(Path().absolute() / 'test_graph.json')
+
 
 ````
 

@@ -21,7 +21,7 @@ class ColoredNode:
         self.color = color
     
     def __repr__(self) -> str:
-        return f'label="{self.label}" color="{self.color}"'
+        return f'ColoredNode(label="{self.label}" color="{self.color})"'
 
 class ColoredGraph:
     def __init__(
