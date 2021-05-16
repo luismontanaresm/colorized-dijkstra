@@ -36,7 +36,9 @@ A->B->C->G->I->F
 
 
 ### Usage interface
-````from graph_tools import (
+````
+
+from graph_tools import (
     Color,
     ColoredNode,
     ColoredGraph
