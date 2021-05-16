@@ -36,12 +36,13 @@ A->B->C->G->I->F
 
 
 ### Usage interface
-````
-from graph_tools import (
+````from graph_tools import (
     Color,
     ColoredNode,
     ColoredGraph
 )
+from pathlib import Path
+
 
 # Instantiate a graph that implements the colored dijkstra algorithm adaptation
 metro_santiago = ColoredGraph()
@@ -61,7 +62,7 @@ metro_santiago.add_node(baquedano)
 
 # Or add multiple stations
 metro_santiago.add_nodes([
-    parque_bustamanete,
+    parque_bustamante,
     santa_isabel,
     irarrazabal
 ])
@@ -75,7 +76,26 @@ metro_santiago.add_edges([
     (santa_isabel, irarrazabal)
 ])
 
+# You can also retrieve a node object from the graph by its name
+retrieved_station_baquedano = metro_santiago.get_node_by_label('Baquedano')
+assert id(retrieved_station_baquedano) == id(baquedano)
 
+# The graph will handle errors when adding edges for nodes 
+# that are not in the graph
+nuble = ColoredNode('Ñuble', None)
+try:
+    metro_santiago.add_edge(irarrazabal, nuble)
+except Exception as e:
+    print('Handled exception: "'+str(e)+'"')
+    # --> Err: node with label "Ñuble" has not been inserted
+
+# Then you are able to add edges
+metro_santiago.add_node(nuble)
+metro_santiago.add_edge(irarrazabal, nuble)
+
+# finally, loading the graph as a json file will clean all previous 
+# nodes and edges
+metro_santiago.load_from_json(Path().absolute() / 'test_graph.json')
 
 ````
 

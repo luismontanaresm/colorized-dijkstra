@@ -21,34 +21,34 @@ class ColoredGraphTest(TestCase):
         H = ColoredNode('H', self.RED)
         I = ColoredNode('I', self.GREEN)
 
-        a_colored_graph = ColoredGraph()
+        colored_graph = ColoredGraph()
 
         # add nodes
-        a_colored_graph.add_nodes([
+        colored_graph.add_nodes([
             A, B, C, 
             D, E, F, 
             G ,H, I
         ])
         # add edges
-        a_colored_graph.add_edges([
+        colored_graph.add_edges([
             (A, B), (B, C), (C, D),
             (D, E), (E, F), (C, G),
             (G, H), (H, I), (I, F)
             ])
 
-        shortest_path_from_A_to_F_with_no_route_color = a_colored_graph.get_shortest_path_to_node(
+        shortest_path_from_A_to_F_with_no_route_color = colored_graph.get_shortest_path_to_node(
             source=A, dest=F)
         self.assertEqual(
             shortest_path_from_A_to_F_with_no_route_color, 
             [A, B, C, D, E, F])
 
-        shortest_path_from_A_to_F_with_red_route = a_colored_graph.get_shortest_path_to_node(
+        shortest_path_from_A_to_F_with_red_route = colored_graph.get_shortest_path_to_node(
             source=A, dest=F, route_color=self.RED)
         self.assertEqual(
             shortest_path_from_A_to_F_with_red_route,
             [A, B, C, H, F])
         
-        shortest_path_from_A_to_F_with_green_route = a_colored_graph.get_shortest_path_to_node(
+        shortest_path_from_A_to_F_with_green_route = colored_graph.get_shortest_path_to_node(
             source=A, dest=F, route_color=self.GREEN
         )
         self.assertIn(

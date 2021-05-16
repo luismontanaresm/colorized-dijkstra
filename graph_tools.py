@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 import json
 
 class Color:
@@ -24,24 +24,42 @@ class ColoredNode:
         return f'label="{self.label}" color="{self.color}"'
 
 class ColoredGraph:
-    def __init__(self, nodes: List[ColoredNode]=None, edges: List[Tuple[ColoredNode]]=None):
+    def __init__(
+            self, 
+            nodes: List[ColoredNode]=None, 
+            edges: List[Tuple[ColoredNode]]=None
+            ):
         self.nodes = nodes if nodes else []
         self.edges = edges if edges else []
 
     def add_node(self, node: ColoredNode):
+        '''
+        Inserts a ColoredNode instance to the graph nodes.
+        '''
         self.nodes.append(node)
         return self
     
     def add_nodes(self, nodes: List[ColoredNode]):
+        '''
+        Inserts a list of ColoredNode instances to the graph nodes.
+        '''
         for node in nodes:
             self.add_node(node)
         return self
     
     def get_node_by_label(self, label: str) -> ColoredNode:
+        '''
+        Return a ColoredNode object in the graph nodes whose name matches with
+        the label argument.
+        '''
         for node in self.nodes:
             if node.label == label: return node
 
     def add_edge(self, n1: ColoredNode, n2: ColoredNode ):
+        '''
+        Receives two ColoredNode instances and adds a connection in the graph 
+        between both nodes. Both of them must be already inserted.
+        '''
         if n1 not in self.nodes:
             raise Exception(f'node with label "{n1.label} has not been inserted"')
         if n2 not in self.nodes:
@@ -51,11 +69,34 @@ class ColoredGraph:
         return self
     
     def add_edges(self, edges: List[Tuple[ColoredNode]]):
+        '''
+        Receives a list of paired ColoredNode instances and adds a connection 
+        in the graph  between both nodes. All of them must be already inserted.
+        '''
         for (n1, n2) in edges:
             self.add_edge(n1, n2)  # --> validates size of edges added
         return self
     
     def load_from_json(self, path: Path):
+        '''
+        Receives a Path to a json file and will reshape the structure of 
+        the graph to the parameters received from the file.
+
+        Json file must follow the following specification:
+        {
+            "nodes": [
+                {"label": (str), "color": (str | null)},
+                {"label": (str), "color": (str | null)},
+                ...
+            ],
+            "edges": [
+                [(str), (str)],
+                [(str), (str)],
+                [(str), (str)],
+                ...
+            ]
+        }
+        '''
         self.nodes = []
         self.edges = []
         with open(path, 'r') as fp:
@@ -71,7 +112,22 @@ class ColoredGraph:
             self.add_edges([ (nodes_map[n1], nodes_map[n2]) for (n1,n2) in edgelist ])
             return self
     
-    def get_shortest_paths(self, source: ColoredNode, route_color: Color=None):
+    def get_shortest_paths(self, source: ColoredNode, route_color: Optional[Color]=None):
+        '''
+        Receives a reference to a 'source' node in the graph and a optional 
+        Color object.
+        
+        Will construct the shortest path to each node from source in the graph
+        using an adaptation to the dijkstra algorithm.
+
+        If route_color is a Color object, the algorigthm will 
+        consider that the cost of going from a node with color==route_color
+        to a node with color!=route_color is zero.
+
+        Returns a dictionary where each node is a key and their values are
+        lists of nodes that will take you from the source node to the key node
+        standing on the least number of nodes.
+        '''
         inf = float('inf')
         best_dist = {node: (inf if node!=source else 0) for node in self.nodes }
         best_prev = {node: None for node in self.nodes}
@@ -149,7 +205,19 @@ class ColoredGraph:
             best_paths[node] = path_construction
         return best_paths
 
-    def get_shortest_path_to_node(self, source: ColoredNode, dest: ColoredNode, route_color=None):
+    def get_shortest_path_to_node(
+            self, 
+            source: ColoredNode, 
+            dest: ColoredNode, 
+            route_color: Optional[Color]=None
+            ):
+        '''
+        Receives a reference to a 'source' node in the graph, a destination 
+        node in the graph and an optional Color object.
+
+        Returns a lists of nodes that will take you from the source node to 
+        the destination node standing on the least number of nodes.
+        '''
         shortest_paths = self.get_shortest_paths(source, route_color)
         shortest_path_to_node = shortest_paths.get(dest)
         return shortest_path_to_node
