@@ -1,5 +1,8 @@
 # Dijkstra Algorithm adaptation to colored graphs
 
+Dijkstra Algorithm adaptation to colored graphs
+
+
 ## How to use it
 ````
 $ # Get the code
