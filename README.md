@@ -1,5 +1,4 @@
 # Dijkstra Algorithm adaptation to colored graphs
-
 Dijkstra Algorithm adaptation to colored graphs
 
 
